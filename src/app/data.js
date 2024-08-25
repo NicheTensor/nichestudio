@@ -203,7 +203,7 @@ export const modelConfig = {
       "guidance_scale": 7,
       "ratio_size": sdxlRatioToSize
   },
-  "fluxschnell": {
+  "fluxSchnell": {
       "num_inference_steps": 4,
       "guidance_scale": 0.0,
       "ratio_size": sdxlRatioToSize
