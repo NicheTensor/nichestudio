@@ -1,9 +1,9 @@
 export const features = [
   { key: "textToImage", label: "Text To Image" },
-  { key: "faceToMany", label: "FaceToMany" },
+  // { key: "faceToMany", label: "FaceToMany" },
   { key: "stickerMaker", label: "StickerMaker" },
-  { key: "personalize", label: "Personalize" },
-  { key: "imageToImage", label: "Image To Image" },
+  // { key: "personalize", label: "Personalize" },
+  // { key: "imageToImage", label: "Image To Image" },
   { key: "goJourney", label: "GoJourney" },
   { key: "chatCompletions", label: "Chat Completions" },
 ];
@@ -22,7 +22,7 @@ export const modelsT2I = [
   { key: "realitiesEdgeXL", label: "RealitiesEdgeXL" },
   { key: "dreamShaperXL", label: "DreamShaperXL" },
   { key: "juggernautXL", label: "JuggernautXL" },
-  { key: "flux_schnell", label: "FluxSchnell" },
+  { key: "fluxSchnell", label: "FluxSchnell" },
   { key: "kolors", label: "Kolors" },
 ];
 
@@ -101,7 +101,7 @@ export const stickerMaker = {
 }
 
 export const textToImage = {
-  model: "animeV3",
+  model: "fluxSchnell",
   ratio: "1:1",
   negativePrompt: "low quality, blurry, pixelated, noisy, low resolution, defocused, out of focus, overexposed, bad image, nsfw",
   uid: "-1",
@@ -203,13 +203,13 @@ export const modelConfig = {
       "guidance_scale": 7,
       "ratio_size": sdxlRatioToSize
   },
-  "flux_schnell": {
+  "fluxSchnell": {
       "num_inference_steps": 4,
       "guidance_scale": 0.0,
       "ratio_size": sdxlRatioToSize
   },
   "kolors": {
-      "num_inference_steps": 30,
+      "num_inference_steps": 28,
       "guidance_scale": 6.0,
       "ratio_size": sdxlRatioToSize
   },
