@@ -22,6 +22,8 @@ export const modelsT2I = [
   { key: "realitiesEdgeXL", label: "RealitiesEdgeXL" },
   { key: "dreamShaperXL", label: "DreamShaperXL" },
   { key: "juggernautXL", label: "JuggernautXL" },
+  { key: "flux_schnell", label: "FluxSchnell" },
+  { key: "kolors", label: "Kolors" },
 ];
 
 export const models = [
@@ -199,6 +201,16 @@ export const modelConfig = {
   "juggernautXL": {
       "num_inference_steps": 25,
       "guidance_scale": 7,
+      "ratio_size": sdxlRatioToSize
+  },
+  "flux_schnell": {
+      "num_inference_steps": 4,
+      "guidance_scale": 0.0,
+      "ratio_size": sdxlRatioToSize
+  },
+  "kolors": {
+      "num_inference_steps": 30,
+      "guidance_scale": 6.0,
       "ratio_size": sdxlRatioToSize
   },
 }
