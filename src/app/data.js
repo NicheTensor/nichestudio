@@ -1,9 +1,9 @@
 export const features = [
   { key: "textToImage", label: "Text To Image" },
-  { key: "faceToMany", label: "FaceToMany" },
+  // { key: "faceToMany", label: "FaceToMany" },
   { key: "stickerMaker", label: "StickerMaker" },
-  { key: "personalize", label: "Personalize" },
-  { key: "imageToImage", label: "Image To Image" },
+  // { key: "personalize", label: "Personalize" },
+  // { key: "imageToImage", label: "Image To Image" },
   { key: "goJourney", label: "GoJourney" },
   { key: "chatCompletions", label: "Chat Completions" },
 ];
