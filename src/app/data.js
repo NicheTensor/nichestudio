@@ -209,7 +209,7 @@ export const modelConfig = {
       "ratio_size": sdxlRatioToSize
   },
   "kolors": {
-      "num_inference_steps": 30,
+      "num_inference_steps": 28,
       "guidance_scale": 6.0,
       "ratio_size": sdxlRatioToSize
   },
