@@ -7,7 +7,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import { MdZoomInMap, MdZoomOutMap } from "react-icons/md";
 
-export default function Output({ settings }) {
+export default function Output({ settings, singleResult }) {
   const { isGenerating, generatedImage, ratio } = settings;
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomedImage, setZoomedImage] = useState(null);
@@ -55,7 +55,7 @@ export default function Output({ settings }) {
           <Card>
             <CardBody >
               <div className="w-full">
-                <div className={`grid grid-cols-1 ${ ratio=="9:16" ? 'md:grid-cols-4' : 'md:grid-cols-2'} gap-4`}>
+                <div className={singleResult ? "" : `grid grid-cols-1 ${ ratio=="9:16" ? 'md:grid-cols-4' : 'md:grid-cols-2'} gap-4`}>
                   {generatedImage.map((image, index) => (
                     <div key={index} className=" relative group w-full xl:w-auto xl:h-[350px] monitor:h-[380px]" style={{ marginLeft: "auto", marginRight: "auto" }}>
                       <Image

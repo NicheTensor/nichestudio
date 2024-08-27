@@ -105,6 +105,32 @@ const generateImages = async (data, setSettings) => {
 
 }
 
+const upscaleImage = async (data, setSettings) => {
+  let newData = { ...data };
+  if (data["seed"] >= 0) newData["seed"] = newData["seed"];
+  else newData["seed"] = getRandomInt(0, 1e9);
+  await fetch("/api/upscale", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newData),
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      let newImage = "/default.avif";
+      if ("image" in result && result["image"] != "")
+        newImage = `data:image/png;base64,${result?.image}`;
+      setSettings((prevSettings) => ({
+        ...prevSettings,
+        generatedImage: [...(prevSettings.generatedImage ?? []), newImage],
+      }));
+    })
+    .catch((error) => {
+      console.error("Request failed: ", error);
+    });
+};
+
 export const generatePersonalize = async (settings, setSettings) => {
   const updateSettings = (attribute, value) => {
     setSettings((prevSettings) => ({
@@ -189,6 +215,47 @@ export const generateImageToImage = async (settings, setSettings) => {
   }
 
   await generateImages(data, setSettings);
+  updateSettings("isGenerating", false);
+}
+
+export const generateImageUpscaling = async (settings, setSettings) => {
+  const updateSettings = (attribute, value) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      [attribute]: value,
+    }));
+  };
+
+  updateSettings("isGenerating", true);
+  updateSettings("generatedImage", [])
+  updateSettings("status", "")
+
+  const { prompt, seed, model, image, useExpansion } = settings;
+  const [width, height] = modelConfig[model]["ratio_size"]["1:1"];
+  const guidanceScale = modelConfig[model]["guidance_scale"]
+  const base64Image = image.base64String.split(",")[1]
+
+  let data = {
+    "key": API_TOKEN,
+    "prompt": prompt,
+    "model_name": 'SUPIR',
+    "seed": parseInt(seed),
+    "miner_uid": parseInt(-1),
+    "pipeline_type": "img2img",
+    "conditional_image": base64Image,
+    "pipeline_params": {
+      "width": width,
+      "height": height,
+      "num_inference_steps": 20,
+      "guidance_scale": guidanceScale,
+      "ip_adapter_scale": parseFloat(1.0),
+      "kps_conditional_image": "",
+      "clip_skip": 2,
+      "use_expansion": useExpansion,
+    },
+  }
+
+  await upscaleImage(data, setSettings);
   updateSettings("isGenerating", false);
 }
 
