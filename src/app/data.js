@@ -1,5 +1,6 @@
 export const features = [
   { key: "textToImage", label: "Text To Image" },
+  { key: "imageUpscaling", label: "Image Upscaling" },
   // { key: "faceToMany", label: "FaceToMany" },
   { key: "stickerMaker", label: "StickerMaker" },
   // { key: "personalize", label: "Personalize" },
@@ -158,6 +159,25 @@ export const imageToImage = {
   promptStrength: 0.8,
   useExpansion: true,
   prompt: "cinematic still of a shiba inu, fluffy neck, wearing a suit of ornate metal armor"
+}
+
+export const imageUpscaling = {
+  model: "dreamShaperXL",
+  ratio: "",
+  uid: "-1",
+  secretKey: "",
+  seed: "-1",
+  poseImage: "",
+  image: null,
+  generatedImage: [],
+  status: "",
+  ipScale: null,
+  controlScale: null,
+  style: "",
+  isGenerating: false,
+  promptStrength: 0.8,
+  useExpansion: true,
+  prompt: "a high quality photo, realistic, masterpiece, very detailed, aesthetic shot"
 }
 
 export const sdRatioToSize = {

@@ -2,9 +2,9 @@
 import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Select, SelectItem, Card, CardBody, Textarea, Accordion, AccordionItem, Slider, Button, Checkbox } from "@nextui-org/react";
-import { ratios, styles, goJourney, faceToMany, stickerMaker, textToImage, personalize, imageToImage, modelsT2I, models } from "../app/data";
+import { ratios, styles, goJourney, faceToMany, stickerMaker, textToImage, personalize, imageToImage, imageUpscaling, modelsT2I, models } from "../app/data";
 import { AiOutlineClose } from "react-icons/ai";
-import { generateFaceToMany, generateGoJourney, generateStickerMaker, generateTextToImage, generatePersonalize, generateImageToImage } from "@/utils/ApiCaller";
+import { generateFaceToMany, generateGoJourney, generateStickerMaker, generateTextToImage, generatePersonalize, generateImageToImage, generateImageUpscaling } from "@/utils/ApiCaller";
 
 const Advanced = ({ uid, secretKey, seed, updateSettings, checkHeight }) => {
 
@@ -300,6 +300,9 @@ export default function Input({ feature, settings, setSettings, setFirstGen, che
       case "imageToImage":
         generateImageToImage(settings, setSettings)
         break;
+      case "imageUpscaling":
+        generateImageUpscaling(settings, setSettings)
+        break;
     }
   }
 
@@ -324,6 +327,9 @@ export default function Input({ feature, settings, setSettings, setFirstGen, che
       case "imageToImage":
         setSettings(imageToImage)
         break;
+      case "imageUpscaling":
+        setSettings(imageUpscaling)
+        break;
     }
   }, [feature])
 
@@ -337,7 +343,7 @@ export default function Input({ feature, settings, setSettings, setFirstGen, che
             feature == "textToImage" && <Models models={modelsT2I} model={model} updateSettings={updateSettings} />
           }
           {
-            (feature == "personalize" || feature == "imageToImage") && <Models models={models} model={model} updateSettings={updateSettings} />
+            ["personalize", "imageToImage"].includes(feature) && <Models models={models} model={model} updateSettings={updateSettings} />
           }
           <Prompt prompt={prompt} updateSettings={updateSettings} />
           {(feature !== "goJourney") && <PromptEnhancement useExpansion={useExpansion} updateSettings={updateSettings} />}
@@ -350,10 +356,10 @@ export default function Input({ feature, settings, setSettings, setFirstGen, che
               <ImageUpload image={image} title="Upload an image" attribute="image" updateSettings={updateSettings} />
             </>
           }
-          {feature == "imageToImage" &&
+          {["imageToImage", "imageUpscaling"].includes(feature) &&
             <>
               <ImageUpload image={image} title="Upload an image" attribute="image" updateSettings={updateSettings} />
-              <Slide scale={promptStrength} title="Strength of prompt" attribute="promptStrength" updateSettings={updateSettings} />
+              {"imageToImage" === feature && <Slide scale={promptStrength} title="Strength of prompt" attribute="promptStrength" updateSettings={updateSettings} />}
             </>
           }
           {feature == "personalize" &&
@@ -365,10 +371,10 @@ export default function Input({ feature, settings, setSettings, setFirstGen, che
             </>
           }
           {
-            (feature == "textToImage" || feature == "personalize" || feature == "imageToImage") &&
+            ["textToImage", "personalize", "imageToImage"].includes(feature) &&
             <NegativePrompt negativePrompt={negativePrompt} updateSettings={updateSettings} />
           }
-          <Advanced uid={uid} secretKey={secretKey} seed={seed} updateSettings={updateSettings} checkHeight={checkHeight}/>
+          {/* <Advanced uid={uid} secretKey={secretKey} seed={seed} updateSettings={updateSettings} checkHeight={checkHeight}/> */}
           <Button className="transition duration-150 ease-in-out text-white" style={{background: "rgba(0, 26, 255, 1)", borderRadius:"20px"}} isDisabled={isGenerating} onClick={generate}>
             Generate
           </Button>

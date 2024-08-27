@@ -142,7 +142,7 @@ export default function Home() {
       >
         <div
           className={clsx(
-            "w-[95%] md:w-[250px] custom:w-[270px] lg:w-[330px] xl:w-[420px]",
+            "w-[95%] md:w-[330px] xl:w-[420px]",
             isChatCompletions && "flex items-center grow gap-4",
           )}
         >
@@ -162,7 +162,7 @@ export default function Home() {
           )}
         </div>
         {!isChatCompletions && (
-          <div className="w-[95%] md:w-[250px] custom:w-[270px] lg:w-[330px] xl:w-[420px] mt-2 mb-2 md:mt-12">
+          <div className="w-[95%] md:w-[330px] xl:w-[420px] md:max-h-[80vh] overflow-auto mt-2 mb-2 md:mt-12">
             <Input
               feature={feature}
               settings={settings}
@@ -186,7 +186,10 @@ export default function Home() {
       ) : (
         !firstGen && (
           <div className="flex mt-3 col-span-2">
-            <Output settings={settings} />
+            <Output
+              settings={settings}
+              singleResult={feature === "imageUpscaling"}
+            />
           </div>
         )
       )}
