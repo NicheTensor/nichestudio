@@ -6,15 +6,61 @@ import clsx from "clsx";
 
 import { chatModels, features } from "./data";
 import Input from "@/components/Input";
-import { textToImage } from "./data";
 import Output from "@/components/Output";
 import MessageList from "@/components/ChatCompletions/MessageList";
 import History from "@/components/ChatCompletions/History";
 import InteractBar from "@/components/ChatCompletions/InteractBar";
 import Logo from "@/components/Logo";
+import PreviousGenerations from "@/components/PreviousGenerations";
+import {
+  goJourney,
+  faceToMany,
+  stickerMaker,
+  textToImage,
+  personalize,
+  imageToImage,
+  imageUpscaling,
+} from "./data";
+import storageSeed from "@/seed/storage.json";
 
-const Feature = ({ feature, setFeature, settings, setFirstGen }) => {
+const Feature = ({
+  feature,
+  setFeature,
+  settings,
+  setSettings,
+  setFirstGen,
+}) => {
   const { isGenerating } = settings;
+
+  const handleChange = (feature) => {
+    setFeature(feature.key);
+    setFirstGen(true);
+
+    switch (feature.key) {
+      case "goJourney":
+        setSettings(goJourney);
+        break;
+      case "faceToMany":
+        setSettings(faceToMany);
+        break;
+      case "stickerMaker":
+        setSettings(stickerMaker);
+        break;
+      case "textToImage":
+        setSettings(textToImage);
+        break;
+      case "personalize":
+        setSettings(personalize);
+        break;
+      case "imageToImage":
+        setSettings(imageToImage);
+        break;
+      case "imageUpscaling":
+        setSettings(imageUpscaling);
+        break;
+    }
+  };
+
   return (
     <Select
       isDisabled={isGenerating}
@@ -27,13 +73,13 @@ const Feature = ({ feature, setFeature, settings, setFirstGen }) => {
         paddingTop: "25px",
         paddingBottom: "25px",
       }}
-      onSelectionChange={(keys) => {
-        if (keys.currentKey) setFeature(keys.currentKey);
-        setFirstGen(true);
-      }}
     >
       {features.map((feature) => (
-        <SelectItem key={feature.key} className="text-primary">
+        <SelectItem
+          key={feature.key}
+          className="text-primary"
+          onClick={() => handleChange(feature)}
+        >
           {feature.label}
         </SelectItem>
       ))}
@@ -52,6 +98,7 @@ export default function Home() {
     },
   ]);
   const [currentConversationIndex, setCurrentConversationIndex] = useState(0);
+  const [storage, setStorage] = useState({});
   const divRef = useRef(null);
 
   const isChatCompletions = feature === "chatCompletions";
@@ -115,6 +162,15 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const settingsFromStorage =
+      JSON.parse(localStorage.getItem("settings")) || {};
+    if (!!Object.entries(settingsFromStorage).length)
+      setStorage(settingsFromStorage);
+    else {
+      setStorage(storageSeed);
+      localStorage.setItem("settings", JSON.stringify(storageSeed));
+    }
+
     const conversationsFromStorage = localStorage.getItem("conversations");
     if (!conversationsFromStorage) return;
     const conversations = JSON.parse(conversationsFromStorage);
@@ -150,6 +206,7 @@ export default function Home() {
             feature={feature}
             setFeature={setFeature}
             settings={settings}
+            setSettings={setSettings}
             setFirstGen={setFirstGen}
           />
           {isChatCompletions && (
@@ -168,6 +225,7 @@ export default function Home() {
               settings={settings}
               setSettings={setSettings}
               setFirstGen={setFirstGen}
+              setStorage={setStorage}
               checkHeight={checkHeight}
             />
           </div>
@@ -200,6 +258,14 @@ export default function Home() {
             ? "fixed bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 md:bottom-6 md:left-10 md:-translate-x-0 md:translate-y-0"
             : "bottom-6 left-10",
         )}
+      />
+      <PreviousGenerations
+        storage={storage}
+        isGenerating={settings.isGenerating}
+        setFeature={setFeature}
+        setSettings={setSettings}
+        setFirstGen={setFirstGen}
+        setStorage={setStorage}
       />
     </div>
   );
