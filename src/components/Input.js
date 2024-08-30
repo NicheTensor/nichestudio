@@ -2,9 +2,12 @@
 import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Select, SelectItem, Card, CardBody, Textarea, Accordion, AccordionItem, Slider, Button, Checkbox } from "@nextui-org/react";
-import { ratios, styles, goJourney, faceToMany, stickerMaker, textToImage, personalize, imageToImage, imageUpscaling, modelsT2I, models } from "../app/data";
+import { ratios, styles, modelsT2I, models } from "../app/data";
 import { AiOutlineClose } from "react-icons/ai";
 import { generateFaceToMany, generateGoJourney, generateStickerMaker, generateTextToImage, generatePersonalize, generateImageToImage, generateImageUpscaling } from "@/utils/ApiCaller";
+
+const DEFAULT_IMAGE = "/default.avif";
+const MAX_STORAGE = 5;
 
 const Advanced = ({ uid, secretKey, seed, updateSettings, checkHeight }) => {
 
@@ -215,15 +218,14 @@ const Ratios = ({ ratio, isGenerating, updateSettings, setFirstGen }) => {
       placeholder="Select a ratio"
       selectedKeys={[ratio]}
       style={{ backgroundColor: "white" }}
-      onSelectionChange={(keys) => {
-        if (keys.currentKey)
-          updateSettings("ratio", keys.currentKey)
-        setFirstGen(true)
-        updateSettings("generatedImage", [])
-      }}
     >
       {ratios.map((rt) => (
-        <SelectItem key={rt.key} className="text-primary">
+        <SelectItem key={rt.key} className="text-primary" onClick={() => {
+          if (rt.key)
+            updateSettings("ratio", rt.key)
+          setFirstGen(true)
+          updateSettings("generatedImage", [])
+        }}>
           {rt.label}
         </SelectItem>
       ))}
@@ -237,10 +239,15 @@ const PromptEnhancement = ({ useExpansion, updateSettings }) => {
   )
 }
 
-export default function Input({ feature, settings, setSettings, setFirstGen, checkHeight }) {
+export default function Input({ feature, settings, setSettings, setFirstGen, setStorage, checkHeight }) {
   const { model, ratio, negativePrompt, uid, secretKey, seed, poseImage, image, ipScale, promptStrength, controlScale, style, isGenerating, status, prompt, useExpansion } = settings;
   const [error, setError] = useState("")
 
+  useEffect(() => {
+    if (!settings.isGenerating && settings.generatedImage.length > 0) {
+      saveNewSettingToLocalStorage(settings);
+    }
+  }, [settings.isGenerating]);
 
   const updateSettings = (attribute, value) => {
     setSettings((prevSettings) => ({
@@ -308,31 +315,58 @@ export default function Input({ feature, settings, setSettings, setFirstGen, che
 
   useEffect(() => {
     setError("")
-    switch (feature) {
-      case "goJourney":
-        setSettings(goJourney)
-        break;
-      case "faceToMany":
-        setSettings(faceToMany)
-        break;
-      case "stickerMaker":
-        setSettings(stickerMaker)
-        break;
-      case "textToImage":
-        setSettings(textToImage)
-        break;
-      case "personalize":
-        setSettings(personalize)
-        break;
-      case "imageToImage":
-        setSettings(imageToImage)
-        break;
-      case "imageUpscaling":
-        setSettings(imageUpscaling)
-        break;
-    }
   }, [feature])
 
+  const saveNewSettingToLocalStorage = async (setting) => {
+    const settings = getLocalStorageSettings();
+    const newKey = `${feature}_${Date.now()}`;
+
+    const processedImages = await Promise.all(
+      setting.generatedImage.map(async (img) => {
+        if (img === DEFAULT_IMAGE) return img;
+
+        const webpBase64 = await convertImage(img);
+        return webpBase64;
+      }),
+    );
+
+    const base64InputImage = setting.image?.base64String
+      ? await convertImage(setting.image.base64String)
+      : undefined;
+    settings[newKey] = {
+      ...setting,
+      image: { ...setting.image, base64String: base64InputImage },
+      generatedImage: processedImages,
+    };
+
+    console.log(Object.keys(settings).length)
+    if (Object.keys(settings).length > MAX_STORAGE) {
+      const lowestTime = Object.keys(settings).reduce((prev, current) => {
+        const value = current.split("_").at(-1);
+        return prev - value > 0 ? value : prev;
+      }, 10e12);
+
+      const oldestKey = Object.keys(settings).find((item) =>
+        item.includes(lowestTime),
+      );
+      delete settings[oldestKey];
+    }
+
+    setStorage(settings);
+    localStorage.setItem("settings", JSON.stringify(settings));
+  };
+
+  const convertImage = async (base64Image) => {
+    const response = await fetch('/api/webp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: base64Image }),
+    });
+    const data = await response.json();
+    return data.webpBase64;
+  };
+
+  const getLocalStorageSettings = () => JSON.parse(localStorage.getItem("settings")) || {};
 
   return (
 
