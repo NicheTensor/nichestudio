@@ -339,7 +339,6 @@ export default function Input({ feature, settings, setSettings, setFirstGen, set
       generatedImage: processedImages,
     };
 
-    console.log(Object.keys(settings).length)
     if (Object.keys(settings).length > MAX_STORAGE) {
       const lowestTime = Object.keys(settings).reduce((prev, current) => {
         const value = current.split("_").at(-1);

@@ -21,6 +21,7 @@ import {
   imageToImage,
   imageUpscaling,
 } from "./data";
+import storageSeed from "@/seed/storage.json";
 
 const Feature = ({
   feature,
@@ -161,7 +162,15 @@ export default function Home() {
   };
 
   useEffect(() => {
-    setStorage(JSON.parse(localStorage.getItem("settings")) || {});
+    const settingsFromStorage =
+      JSON.parse(localStorage.getItem("settings")) || {};
+    if (!!Object.entries(settingsFromStorage).length)
+      setStorage(settingsFromStorage);
+    else {
+      setStorage(storageSeed);
+      localStorage.setItem("settings", JSON.stringify(storageSeed));
+    }
+
     const conversationsFromStorage = localStorage.getItem("conversations");
     if (!conversationsFromStorage) return;
     const conversations = JSON.parse(conversationsFromStorage);
