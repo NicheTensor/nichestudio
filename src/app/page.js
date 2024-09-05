@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
+import { useSearchParams } from 'next/navigation';
 
 import { chatModels, features } from "./data";
 import Input from "@/components/Input";
@@ -88,8 +89,12 @@ const Feature = ({
 };
 
 export default function Home() {
+  const searchParams = useSearchParams();
   const [firstGen, setFirstGen] = useState(true);
-  const [feature, setFeature] = useState("textToImage");
+  const [feature, setFeature] = useState(() => {
+    const featureParam = searchParams.get('feature');
+    return features.some(f => f.key === featureParam) ? featureParam : "textToImage";
+  });
   const [settings, setSettings] = useState(textToImage);
   const [conversations, setConversations] = useState([
     {
@@ -180,6 +185,14 @@ export default function Home() {
   useEffect(() => {
     checkHeight();
   }, [feature, settings]);
+
+  useEffect(() => {
+    const featureParam = searchParams.get('feature');
+    if (featureParam && features.some(f => f.key === featureParam)) {
+      setFeature(featureParam);
+      setFirstGen(true);
+    }
+  }, [searchParams]);
 
   return (
     <div
