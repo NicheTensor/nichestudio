@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from "react";
 import { Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { chatModels, features } from "./data";
 import Input from "@/components/Input";
@@ -117,6 +117,12 @@ export default function Home() {
 
   const isChatCompletions = feature === "chatCompletions";
   const currentConversation = conversations[currentConversationIndex];
+  const router = useRouter();
+
+  const setFeatureWithSearchParams = (feature) => {
+    setFeature(feature);
+    router.push(`/?feature=${feature}`);
+  };
 
   const checkHeight = () => {
     const div = divRef.current;
@@ -218,7 +224,7 @@ export default function Home() {
         >
           <Feature
             feature={feature}
-            setFeature={setFeature}
+            setFeature={setFeatureWithSearchParams}
             settings={settings}
             setSettings={setSettings}
             setFirstGen={setFirstGen}
@@ -282,7 +288,7 @@ export default function Home() {
       <PreviousGenerations
         storage={storage}
         isGenerating={settings.isGenerating}
-        setFeature={setFeature}
+        setFeature={setFeatureWithSearchParams}
         setSettings={setSettings}
         setFirstGen={setFirstGen}
         setStorage={setStorage}
