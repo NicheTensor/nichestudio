@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
 import { useSearchParams } from 'next/navigation';
@@ -88,13 +88,22 @@ const Feature = ({
   );
 };
 
-export default function Home() {
+const FeatureSelector = ({ onFeatureSelect }) => {
   const searchParams = useSearchParams();
-  const [firstGen, setFirstGen] = useState(true);
-  const [feature, setFeature] = useState(() => {
+  
+  useEffect(() => {
     const featureParam = searchParams.get('feature');
-    return features.some(f => f.key === featureParam) ? featureParam : "textToImage";
-  });
+    if (featureParam && features.some(f => f.key === featureParam)) {
+      onFeatureSelect(featureParam);
+    }
+  }, [searchParams, onFeatureSelect]);
+
+  return null;
+};
+
+export default function Home() {
+  const [firstGen, setFirstGen] = useState(true);
+  const [feature, setFeature] = useState("textToImage");
   const [settings, setSettings] = useState(textToImage);
   const [conversations, setConversations] = useState([
     {
@@ -186,14 +195,6 @@ export default function Home() {
     checkHeight();
   }, [feature, settings]);
 
-  useEffect(() => {
-    const featureParam = searchParams.get('feature');
-    if (featureParam && features.some(f => f.key === featureParam)) {
-      setFeature(featureParam);
-      setFirstGen(true);
-    }
-  }, [searchParams]);
-
   return (
     <div
       className={clsx(
@@ -244,6 +245,12 @@ export default function Home() {
           </div>
         )}
       </div>
+      <Suspense fallback={null}>
+        <FeatureSelector onFeatureSelect={(f) => {
+          setFeature(f);
+          setFirstGen(true);
+        }} />
+      </Suspense>
       {isChatCompletions ? (
         <div className="w-full max-w-[600px] px-4 h-full max-h-[calc(100dvh-62px)] mx-auto pt-6 pb-4 md:pb-8 flex flex-col justify-between gap-6">
           <MessageList messages={currentConversation?.messages} />
