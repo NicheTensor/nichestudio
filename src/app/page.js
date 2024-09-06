@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { chatModels, features } from "./data";
 import Input from "@/components/Input";
@@ -87,6 +88,19 @@ const Feature = ({
   );
 };
 
+const FeatureSelector = ({ onFeatureSelect }) => {
+  const searchParams = useSearchParams();
+  
+  useEffect(() => {
+    const featureParam = searchParams.get('feature');
+    if (featureParam && features.some(f => f.key === featureParam)) {
+      onFeatureSelect(featureParam);
+    }
+  }, [searchParams, onFeatureSelect]);
+
+  return null;
+};
+
 export default function Home() {
   const [firstGen, setFirstGen] = useState(true);
   const [feature, setFeature] = useState("textToImage");
@@ -103,6 +117,12 @@ export default function Home() {
 
   const isChatCompletions = feature === "chatCompletions";
   const currentConversation = conversations[currentConversationIndex];
+  const router = useRouter();
+
+  const setFeatureWithSearchParams = (feature) => {
+    setFeature(feature);
+    router.push(`/?feature=${feature}`);
+  };
 
   const checkHeight = () => {
     const div = divRef.current;
@@ -204,7 +224,7 @@ export default function Home() {
         >
           <Feature
             feature={feature}
-            setFeature={setFeature}
+            setFeature={setFeatureWithSearchParams}
             settings={settings}
             setSettings={setSettings}
             setFirstGen={setFirstGen}
@@ -231,6 +251,12 @@ export default function Home() {
           </div>
         )}
       </div>
+      <Suspense fallback={null}>
+        <FeatureSelector onFeatureSelect={(f) => {
+          setFeature(f);
+          setFirstGen(true);
+        }} />
+      </Suspense>
       {isChatCompletions ? (
         <div className="w-full max-w-[600px] px-4 h-full max-h-[calc(100dvh-62px)] mx-auto pt-6 pb-4 md:pb-8 flex flex-col justify-between gap-6">
           <MessageList messages={currentConversation?.messages} />
@@ -262,7 +288,7 @@ export default function Home() {
       <PreviousGenerations
         storage={storage}
         isGenerating={settings.isGenerating}
-        setFeature={setFeature}
+        setFeature={setFeatureWithSearchParams}
         setSettings={setSettings}
         setFirstGen={setFirstGen}
         setStorage={setStorage}
