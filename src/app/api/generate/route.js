@@ -3,7 +3,7 @@ export const maxDuration = 60;
 export async function POST(request) {
   const data = await request.json()
   try {
-    const response = await fetch('http://proxy_client_nicheimage.nichetensor.com:10003/generate', {
+    const response = await fetch('https://proxy-client.nichetensor.com/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
