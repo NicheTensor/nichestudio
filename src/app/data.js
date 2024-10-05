@@ -26,6 +26,7 @@ export const modelsT2I = [
   { key: "fluxSchnell", label: "FluxSchnell" },
   { key: "kolors", label: "Kolors" },
   { key: "openGeneral", label: "OpenGeneral"},
+  { key: "openDigitalArt", label: "OpenDigitalArt"},
 ];
 
 export const models = [
@@ -235,6 +236,11 @@ export const modelConfig = {
       "ratio_size": sdxlRatioToSize
   },
   "openGeneral": {
+      "num_inference_steps": 28,
+      "guidance_scale": 6.0,
+      "ratio_size": sdxlRatioToSize
+  },
+  "openDigitalArt": {
       "num_inference_steps": 28,
       "guidance_scale": 6.0,
       "ratio_size": sdxlRatioToSize
