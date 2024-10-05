@@ -25,6 +25,7 @@ export const modelsT2I = [
   { key: "juggernautXL", label: "JuggernautXL" },
   { key: "fluxSchnell", label: "FluxSchnell" },
   { key: "kolors", label: "Kolors" },
+  { key: "openGeneral", label: "OpenGeneral"},
 ];
 
 export const models = [
@@ -229,6 +230,11 @@ export const modelConfig = {
       "ratio_size": sdxlRatioToSize
   },
   "kolors": {
+      "num_inference_steps": 28,
+      "guidance_scale": 6.0,
+      "ratio_size": sdxlRatioToSize
+  },
+  "openGeneral": {
       "num_inference_steps": 28,
       "guidance_scale": 6.0,
       "ratio_size": sdxlRatioToSize
