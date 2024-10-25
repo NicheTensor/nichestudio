@@ -207,43 +207,51 @@ export const modelConfig = {
       "num_inference_steps": 25,
       "guidance_scale": 7,
       "clip_skip": 2,
-      "ratio_size": sdxlRatioToSize
+      "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
   "realitiesEdgeXL": {
       "num_inference_steps": 7,
       "guidance_scale": 1,
       "clip_skip": 2,
       "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
   "dreamShaperXL": {
       "num_inference_steps": 8,
       "guidance_scale": 2,
-      "ratio_size": sdxlRatioToSize
+      "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
   "juggernautXL": {
       "num_inference_steps": 25,
       "guidance_scale": 7,
-      "ratio_size": sdxlRatioToSize
+      "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
   "fluxSchnell": {
       "num_inference_steps": 4,
       "guidance_scale": 0.0,
-      "ratio_size": sdxlRatioToSize
+      "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
   "kolors": {
       "num_inference_steps": 28,
       "guidance_scale": 6.0,
-      "ratio_size": sdxlRatioToSize
+      "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
   "openGeneral": {
       "num_inference_steps": 28,
       "guidance_scale": 6.0,
-      "ratio_size": sdxlRatioToSize
+      "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
   "openDigitalArt": {
       "num_inference_steps": 28,
       "guidance_scale": 6.0,
-      "ratio_size": sdxlRatioToSize
+      "ratio_size": sdxlRatioToSize,
+      "image_format": "JPEG",
   },
 }
 
