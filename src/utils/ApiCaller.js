@@ -367,6 +367,7 @@ export const generateFaceToMany = async (settings, setSettings) => {
 export const generateGoJourney = async (settings, setSettings) => {
 
   const updateSettings = (attribute, value) => {
+    console.log("Updating settings:", attribute, value);
     setSettings((prevSettings) => ({
       ...prevSettings,
       [attribute]: value,

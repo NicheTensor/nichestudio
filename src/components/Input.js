@@ -249,6 +249,19 @@ export default function Input({ feature, settings, setSettings, setFirstGen, set
     }
   }, [settings.isGenerating]);
 
+  useEffect(() => {
+    if (feature === "textToImage" && model === "goJourney") {
+      // Reset to GoJourney specific settings
+      setSettings(prevSettings => ({
+        ...prevSettings,
+        ratio: "",
+        negativePrompt: "",
+        useExpansion: true,
+        prompt: "an image of izuku midoriya wearing a dark green t - shirt and baseball cap being served by a robot maid with large technics arms, by Range Murata, Katsuhiro Otomo, Yoshitaka Amano, and Artgerm. 3D shadowing effect, 8K resolution. --ar 4:5 --v 6"
+      }));
+    }
+  }, [model, feature]);
+
   const updateSettings = (attribute, value) => {
     setSettings((prevSettings) => ({
       ...prevSettings,
@@ -289,9 +302,6 @@ export default function Input({ feature, settings, setSettings, setFirstGen, set
       return
     setFirstGen(false)
     switch (feature) {
-      case "goJourney":
-        generateGoJourney(settings, setSettings)
-        break;
       case "faceToMany":
         generateFaceToMany(settings, setSettings)
         break;
@@ -299,7 +309,11 @@ export default function Input({ feature, settings, setSettings, setFirstGen, set
         generateStickerMaker(settings, setSettings)
         break;
       case "textToImage":
-        generateTextToImage(settings, setSettings)
+        if (model === "goJourney") {
+          generateGoJourney(settings, setSettings)
+        } else {
+          generateTextToImage(settings, setSettings)
+        }
         break;
       case "personalize":
         generatePersonalize(settings, setSettings)
@@ -379,10 +393,65 @@ export default function Input({ feature, settings, setSettings, setFirstGen, set
             ["personalize", "imageToImage"].includes(feature) && <Models models={models} model={model} updateSettings={updateSettings} />
           }
           <Prompt prompt={prompt} updateSettings={updateSettings} />
-          {(feature !== "goJourney") && <PromptEnhancement useExpansion={useExpansion} updateSettings={updateSettings} />}
-          {
-            feature == "textToImage" && <Ratios ratio={ratio} isGenerating={isGenerating} updateSettings={updateSettings} setFirstGen={setFirstGen} />
-          }
+          {(feature === "textToImage" && model === "goJourney") && (
+            <div className="text-sm text-gray-500 px-2">
+              <p className="font-medium mb-2">Available GoJourney Parameters:</p>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <table className="w-full">
+                  <tbody className="space-y-1">
+                    <tr>
+                      <td className="font-medium pr-2">--ar</td>
+                      <td>Aspect ratio (e.g., --ar 16:9)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--v</td>
+                      <td>Version 1-6, default is latest (e.g., --v 6)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--q</td>
+                      <td>Quality 1-5, default is 1 (e.g., --q 2)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--chaos</td>
+                      <td>Randomness 0-100 (e.g., --chaos 50)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--stylize</td>
+                      <td>Artistic influence 0-1000 (e.g., --stylize 500)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--weird</td>
+                      <td>Unconventional results 0-3000 (e.g., --weird 750)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--seed</td>
+                      <td>Fixed randomness (e.g., --seed 12345)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--no</td>
+                      <td>Excludes elements (e.g., --no trees)</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--tile</td>
+                      <td>Creates seamless patterns</td>
+                    </tr>
+                    <tr>
+                      <td className="font-medium pr-2">--hd</td>
+                      <td>High detail mode (v5 and earlier)</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p className="mt-3 text-xs italic">Add these parameters at the end of your prompt to refine the output.</p>
+              </div>
+            </div>
+          )}
+          {(feature === "textToImage" && model !== "goJourney") && (
+            <>
+              <PromptEnhancement useExpansion={useExpansion} updateSettings={updateSettings} />
+              <Ratios ratio={ratio} isGenerating={isGenerating} updateSettings={updateSettings} setFirstGen={setFirstGen} />
+              <NegativePrompt negativePrompt={negativePrompt} updateSettings={updateSettings} />
+            </>
+          )}
           {feature == "faceToMany" &&
             <>
               <Style style={style} updateSettings={updateSettings} />
@@ -401,10 +470,11 @@ export default function Input({ feature, settings, setSettings, setFirstGen, set
               <ImageUpload image={poseImage} title="Upload your image that contains pose" attribute="poseImage" updateSettings={updateSettings} />
               <Slide scale={ipScale} title="IP Adapter Scale" attribute="ipScale" updateSettings={updateSettings} />
               <Slide scale={controlScale} title="ControlNet Scale" attribute="controlScale" updateSettings={updateSettings} />
+              <NegativePrompt negativePrompt={negativePrompt} updateSettings={updateSettings} />
             </>
           }
           {
-            ["textToImage", "personalize", "imageToImage"].includes(feature) &&
+            (feature === "imageToImage") &&
             <NegativePrompt negativePrompt={negativePrompt} updateSettings={updateSettings} />
           }
           {/* <Advanced uid={uid} secretKey={secretKey} seed={seed} updateSettings={updateSettings} checkHeight={checkHeight}/> */}

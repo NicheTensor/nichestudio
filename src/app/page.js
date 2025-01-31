@@ -38,9 +38,6 @@ const Feature = ({
     setFirstGen(true);
 
     switch (feature.key) {
-      case "goJourney":
-        setSettings(goJourney);
-        break;
       case "faceToMany":
         setSettings(faceToMany);
         break;

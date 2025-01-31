@@ -5,7 +5,6 @@ export const features = [
   { key: "stickerMaker", label: "StickerMaker" },
   // { key: "personalize", label: "Personalize" },
   // { key: "imageToImage", label: "Image To Image" },
-  { key: "goJourney", label: "GoJourney" },
   { key: "chatCompletions", label: "Chat Completions" },
 ];
 
@@ -27,6 +26,7 @@ export const modelsT2I = [
   { key: "kolors", label: "Kolors" },
   { key: "openGeneral", label: "OpenGeneral"},
   { key: "openDigitalArt", label: "OpenDigitalArt"},
+  { key: "goJourney", label: "GoJourney"}
 ];
 
 export const models = [
