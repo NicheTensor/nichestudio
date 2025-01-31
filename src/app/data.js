@@ -2,7 +2,7 @@ export const features = [
   { key: "textToImage", label: "Text To Image" },
   { key: "imageUpscaling", label: "Image Upscaling" },
   // { key: "faceToMany", label: "FaceToMany" },
-  { key: "stickerMaker", label: "StickerMaker" },
+  // { key: "stickerMaker", label: "StickerMaker" },
   // { key: "personalize", label: "Personalize" },
   // { key: "imageToImage", label: "Image To Image" },
   { key: "chatCompletions", label: "Chat Completions" },
@@ -18,8 +18,6 @@ export const styles = [
 ];
 
 export const modelsT2I = [
-  { key: "animeV3", label: "AnimeV3" },
-  { key: "realitiesEdgeXL", label: "RealitiesEdgeXL" },
   { key: "dreamShaperXL", label: "DreamShaperXL" },
   { key: "juggernautXL", label: "JuggernautXL" },
   { key: "fluxSchnell", label: "FluxSchnell" },
@@ -203,20 +201,6 @@ export const sdxlRatioToSize = {
 }
 
 export const modelConfig = {
-  "animeV3": {
-      "num_inference_steps": 25,
-      "guidance_scale": 7,
-      "clip_skip": 2,
-      "ratio_size": sdxlRatioToSize,
-      "image_format": "JPEG",
-  },
-  "realitiesEdgeXL": {
-      "num_inference_steps": 7,
-      "guidance_scale": 1,
-      "clip_skip": 2,
-      "ratio_size": sdxlRatioToSize,
-      "image_format": "JPEG",
-  },
   "dreamShaperXL": {
       "num_inference_steps": 8,
       "guidance_scale": 2,
