@@ -251,7 +251,6 @@ export default function Home() {
       <Suspense fallback={null}>
         <FeatureSelector onFeatureSelect={(f) => {
           setFeature(f);
-          setFirstGen(true);
         }} />
       </Suspense>
       {isChatCompletions ? (
